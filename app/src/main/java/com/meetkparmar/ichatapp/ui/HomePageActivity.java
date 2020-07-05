@@ -2,13 +2,16 @@ package com.meetkparmar.ichatapp.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.icu.lang.UCharacter;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.meetkparmar.ichatapp.ItemClicked;
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.adapter.UserDetailsAdapter;
 import com.meetkparmar.ichatapp.models.UserDetails;
@@ -18,13 +21,14 @@ import com.meetkparmar.ichatapp.viewmodels.HomePageActivityViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class HomePageActivity extends AppCompatActivity {
+public class HomePageActivity extends AppCompatActivity implements ItemClicked {
 
     private ProgressDialog progressDialog;
     private RecyclerView rvUserList;
@@ -61,7 +65,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     private void initAdapter(List<Users> usersList) {
         rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new UserDetailsAdapter(usersList);
+        adapter = new UserDetailsAdapter(usersList, this);
         rvUserList.setAdapter(adapter);
     }
 
@@ -82,5 +86,15 @@ public class HomePageActivity extends AppCompatActivity {
         if (progressDialog.isShowing()) {
             progressDialog.hide();
         }
+    }
+
+    @Override
+    public void onClickedListener(int position) {
+        String name = users.get(position).getName();
+        String image = users.get(position).getImage();
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("name", name);
+        intent.putExtra("image", image);
+        startActivity(intent);
     }
 }

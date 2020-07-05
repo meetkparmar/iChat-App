@@ -1,5 +1,6 @@
 package com.meetkparmar.ichatapp;
 
+import com.meetkparmar.ichatapp.models.UserChatDetails;
 import com.meetkparmar.ichatapp.models.UserDetails;
 
 import androidx.lifecycle.MutableLiveData;
@@ -42,6 +43,27 @@ public class RetrofitManager {
             }
         });
         return userDetailsMutableLiveData;
+    }
+
+    public MutableLiveData<UserChatDetails> getUserChatDetails() {
+        final MutableLiveData<UserChatDetails> userChatDetailsMutableLiveData = new MutableLiveData<>();
+        Call<UserChatDetails> call = retrofitApis.getUserChats();
+        call.enqueue(new Callback<UserChatDetails>() {
+            @Override
+            public void onResponse(Call<UserChatDetails> call, Response<UserChatDetails> response) {
+                if (response.isSuccessful()) {
+                    userChatDetailsMutableLiveData.postValue(response.body());
+                } else {
+                    userChatDetailsMutableLiveData.postValue(new UserChatDetails(-1, "Something Went Wrong!"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserChatDetails> call, Throwable t) {
+                userChatDetailsMutableLiveData.postValue(new UserChatDetails(-1, "Something Went Wrong!\nFailure on request."));
+            }
+        });
+        return userChatDetailsMutableLiveData;
     }
 
 }

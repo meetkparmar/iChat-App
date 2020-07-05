@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.meetkparmar.ichatapp.ItemClicked;
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.models.Users;
 
@@ -15,14 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class UserDetailsAdapter extends RecyclerView.Adapter<UserDetailsViewHolder> {
 
     public List<Users> data;
+    public ItemClicked itemClickedListener;
 
     public void setData(List<Users> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public UserDetailsAdapter(List<Users> data) {
+    public UserDetailsAdapter(List<Users> data, ItemClicked itemClickedListener) {
         this.data = data;
+        this.itemClickedListener = itemClickedListener;
     }
 
     @NonNull
@@ -35,7 +38,7 @@ public class UserDetailsAdapter extends RecyclerView.Adapter<UserDetailsViewHold
     @Override
     public void onBindViewHolder(@NonNull UserDetailsViewHolder holder, int position) {
         Users item = data.get(position);
-        holder.bind(item, position);
+        holder.bind(item, position, itemClickedListener);
     }
 
     @Override
