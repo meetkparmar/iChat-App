@@ -1,4 +1,4 @@
-package com.meetkparmar.ichatapp;
+package com.meetkparmar.ichatapp.network;
 
 import com.meetkparmar.ichatapp.models.MessageBody;
 import com.meetkparmar.ichatapp.models.MessageBodyResponse;

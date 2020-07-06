@@ -1,20 +1,10 @@
 package com.meetkparmar.ichatapp.models;
 
-import java.util.List;
-
 public class MessageBodyResponse {
     public int success;
     public String message;
     private Users user;
-    private ChatResponse chatResponse;
-
-    public ChatResponse getChatResponse() {
-        return chatResponse;
-    }
-
-    public void setChatResponse(ChatResponse chatResponse) {
-        this.chatResponse = chatResponse;
-    }
+    private Chats chat;
 
     public MessageBodyResponse(int success, String message) {
         this.success = success;
@@ -45,13 +35,11 @@ public class MessageBodyResponse {
         this.user = user;
     }
 
-    public Chats getChats() {
-        return chats;
+    public Chats getChat() {
+        return chat;
     }
 
-    public void setChats(Chats chats) {
-        this.chats = chats;
+    public void setChat(Chats chat) {
+        this.chat = chat;
     }
-
-    private Chats chats;
 }

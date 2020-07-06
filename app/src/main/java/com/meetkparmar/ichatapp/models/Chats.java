@@ -1,7 +1,5 @@
 package com.meetkparmar.ichatapp.models;
 
-import java.util.List;
-
 public class Chats {
 
     private int id;
@@ -10,6 +8,7 @@ public class Chats {
     private String deleted_at;
     private String created_at;
     private String updated_at;
+    private boolean sent_now;
 
     public int getId() {
         return id;
@@ -57,5 +56,13 @@ public class Chats {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public boolean isSent_now() {
+        return sent_now;
+    }
+
+    public void setSent_now(boolean sent_now) {
+        this.sent_now = sent_now;
     }
 }

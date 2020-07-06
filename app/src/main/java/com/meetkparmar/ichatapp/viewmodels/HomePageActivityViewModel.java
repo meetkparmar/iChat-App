@@ -2,7 +2,7 @@ package com.meetkparmar.ichatapp.viewmodels;
 
 import android.app.Application;
 
-import com.meetkparmar.ichatapp.RetrofitManager;
+import com.meetkparmar.ichatapp.network.RetrofitManager;
 import com.meetkparmar.ichatapp.models.UserDetails;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -20,7 +20,7 @@ public class HomePageActivityViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    public LiveData<UserDetails> userDetails(){
+    public LiveData<UserDetails> userDetails() {
         return userDetailsResponseMediatorLiveData;
     }
 
@@ -32,6 +32,6 @@ public class HomePageActivityViewModel extends AndroidViewModel {
                     userDetailsResponseMediatorLiveData.setValue(userDetails);
                 }
             }
-        }) ;
+        });
     }
 }

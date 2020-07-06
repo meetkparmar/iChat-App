@@ -19,12 +19,10 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private Context context;
     private List<Chats> dataRecevied;
-    private boolean status;
 
     public ChatDetailsAdapter(Context context, List<Chats> chatsList, boolean status) {
         this.context = context;
         this.dataRecevied = chatsList;
-        this.status = status;
     }
 
     public void setDataReceived(List<Chats> data) {
@@ -34,9 +32,9 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        Chats chats = (Chats) dataRecevied.get(position);
+        Chats chat = dataRecevied.get(position);
 
-        if (status) {
+        if (chat.isSent_now()) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
@@ -51,20 +49,22 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
         View view;
 
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_mesage_sent, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mesage_sent, parent, false);
             return new SentChatViewHolder(view);
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_message_received, parent, false);
             return new ReceiveChatViewHolder(view);
         }
-        return null;
+
+        view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_message_received, parent, false);
+        return new ReceiveChatViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Chats chats = (Chats) dataRecevied.get(position);
+        Chats chats = dataRecevied.get(position);
 
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:

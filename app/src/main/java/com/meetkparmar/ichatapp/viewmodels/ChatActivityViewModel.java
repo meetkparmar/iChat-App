@@ -2,11 +2,10 @@ package com.meetkparmar.ichatapp.viewmodels;
 
 import android.app.Application;
 
-import com.meetkparmar.ichatapp.RetrofitManager;
+import com.meetkparmar.ichatapp.network.RetrofitManager;
 import com.meetkparmar.ichatapp.models.MessageBody;
 import com.meetkparmar.ichatapp.models.MessageBodyResponse;
 import com.meetkparmar.ichatapp.models.UserChatDetails;
-import com.meetkparmar.ichatapp.models.UserDetails;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -25,7 +24,7 @@ public class ChatActivityViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    public LiveData<UserChatDetails> userChatDetails(){
+    public LiveData<UserChatDetails> userChatDetails() {
         return userChatDetailsMediatorLiveData;
     }
 
@@ -37,18 +36,18 @@ public class ChatActivityViewModel extends AndroidViewModel {
                     userChatDetailsMediatorLiveData.setValue(userChatDetails);
                 }
             }
-        }) ;
+        });
     }
 
-    public LiveData<MessageBodyResponse> sentMessage(){
+    public LiveData<MessageBodyResponse> sentMessage() {
         return messageBodyResponseMediatorLiveData;
     }
 
-    public void sendMessage(MessageBody messageBody){
+    public void sendMessage(MessageBody messageBody) {
         messageBodyResponseMediatorLiveData.addSource(retrofitManager.sendMessage(messageBody), new Observer<MessageBodyResponse>() {
             @Override
             public void onChanged(MessageBodyResponse messageBodyResponse) {
-                if (messageBodyResponse != null){
+                if (messageBodyResponse != null) {
                     messageBodyResponseMediatorLiveData.setValue(messageBodyResponse);
                 }
             }

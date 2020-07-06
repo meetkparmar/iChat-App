@@ -1,6 +1,4 @@
-package com.meetkparmar.ichatapp;
-
-import android.text.format.Time;
+package com.meetkparmar.ichatapp.network;
 
 import com.meetkparmar.ichatapp.models.MessageBody;
 import com.meetkparmar.ichatapp.models.MessageBodyResponse;
@@ -11,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.lifecycle.MutableLiveData;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,20 +29,6 @@ public class RetrofitManager {
     Retrofit retrofit = builder.client(httpClient.build()).build();
 
     RetrofitApis retrofitApis = retrofit.create(RetrofitApis.class);
-
-//    private RetrofitApis getRetrofitApis(){
-//        return getRetrofitClients().create(RetrofitApis.class);
-//    }
-//
-//    private Retrofit getRetrofitClients() {
-//
-//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-//                .readTimeout(60, TimeUnit.SECONDS)
-//                .connectTimeout(60, TimeUnit.SECONDS)
-//                .writeTimeout(60, TimeUnit.SECONDS);
-//
-//        return null;
-//    }
 
     public MutableLiveData<UserDetails> getUserDetails() {
         final MutableLiveData<UserDetails> userDetailsMutableLiveData = new MutableLiveData<>();

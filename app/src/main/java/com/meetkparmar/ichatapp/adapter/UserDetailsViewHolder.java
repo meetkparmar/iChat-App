@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.meetkparmar.ichatapp.CircleTransform;
-import com.meetkparmar.ichatapp.ItemClicked;
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.models.Users;
 import com.squareup.picasso.Picasso;
@@ -28,7 +26,7 @@ public class UserDetailsViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Users users, final Integer position, final ItemClicked itemClickedListener) {
         name.setText(users.getName());
-        Picasso.get().load(Uri.parse(users.getImage())).centerInside().fit().transform(new CircleTransform()).into(image);
+        Picasso.get().load(Uri.parse(users.getImage())).into(image);
         this.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

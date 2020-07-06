@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.meetkparmar.ichatapp.ItemClicked;
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.models.Users;
 

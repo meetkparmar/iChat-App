@@ -2,19 +2,16 @@ package com.meetkparmar.ichatapp.ui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.meetkparmar.ichatapp.CircleTransform;
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.adapter.ChatDetailsAdapter;
 import com.meetkparmar.ichatapp.models.Chats;
@@ -25,8 +22,6 @@ import com.meetkparmar.ichatapp.viewmodels.ChatActivityViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -55,7 +50,6 @@ public class ChatActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ChatDetailsAdapter adapter;
     private List<Chats> chatsList = new ArrayList<>();
-    private Chats chat;
     private RecyclerView rvMessageList;
 
     private Observer<UserChatDetails> UserChatDetailsObserver = new Observer<UserChatDetails>() {
@@ -78,11 +72,13 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public void onChanged(MessageBodyResponse messageBodyResponse) {
             if (messageBodyResponse != null) {
-                hideLoadingDialog();
                 if (messageBodyResponse.success != 1) {
                     Toast.makeText(ChatActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 } else {
-
+                    Chats chat = messageBodyResponse.getChat();
+                    chat.setSent_now(true);
+                    chatsList.set(0, chat);
+                    adapter.setDataReceived(chatsList);
                 }
             }
         }
@@ -130,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
         image = intent.getStringExtra("image");
 
         userName.setText(name);
-        Picasso.get().load(Uri.parse(image)).centerInside().fit().transform(new CircleTransform()).into(icon);
+        Picasso.get().load(Uri.parse(image)).into(icon);
 
         viewModel = new ViewModelProvider(this).get(ChatActivityViewModel.class);
         progressDialog = new ProgressDialog(this);
@@ -138,7 +134,6 @@ public class ChatActivity extends AppCompatActivity {
         viewModel.getUserChatDetails(userId);
 
         initAdapter(chatsList);
-//        initAdapter(chat);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,11 +149,18 @@ public class ChatActivity extends AppCompatActivity {
                 messageBody = new MessageBody();
                 messageBody.setMessage(message);
                 messageBody.setId(userId);
+
+                Chats chatMessage = new Chats();
+                chatMessage.setUser_id(userId);
+                chatMessage.setMessage(message);
+                chatMessage.setSent_now(true);
+                chatsList.add(0, chatMessage);
+                adapter.setDataReceived(chatsList);
+
                 viewModel.sendMessage(messageBody);
                 etChatBox.setText("");
             }
         });
-
     }
 
     private void initAdapter(List<Chats> chatsList) {
@@ -167,14 +169,7 @@ public class ChatActivity extends AppCompatActivity {
         rvMessageList.setAdapter(adapter);
     }
 
-//    private void initAdapter(Chats chat) {
-//        rvMessageList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
-//        adapter = new ChatDetailsAdapter(this, chat, false);
-//        rvMessageList.setAdapter(adapter);
-//    }
-
-    private List<Chats> reverseListOrder(List<Chats> status)
-    {
+    private List<Chats> reverseListOrder(List<Chats> status) {
         Iterator<Chats> it = status.iterator();
         List<Chats> destination = new ArrayList<>();
         while (it.hasNext()) {
