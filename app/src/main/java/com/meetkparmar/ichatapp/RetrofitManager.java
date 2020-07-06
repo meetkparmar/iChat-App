@@ -1,10 +1,17 @@
 package com.meetkparmar.ichatapp;
 
+import android.text.format.Time;
+
+import com.meetkparmar.ichatapp.models.MessageBody;
+import com.meetkparmar.ichatapp.models.MessageBodyResponse;
 import com.meetkparmar.ichatapp.models.UserChatDetails;
 import com.meetkparmar.ichatapp.models.UserDetails;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.lifecycle.MutableLiveData;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -15,7 +22,10 @@ public class RetrofitManager {
 
     String API_BASE_URL = "https://assignment.medimetry.in/";
 
-    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+    OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS);
 
     Retrofit.Builder builder = new Retrofit.Builder().baseUrl(API_BASE_URL).addConverterFactory(GsonConverterFactory.create());
 
@@ -23,6 +33,19 @@ public class RetrofitManager {
 
     RetrofitApis retrofitApis = retrofit.create(RetrofitApis.class);
 
+//    private RetrofitApis getRetrofitApis(){
+//        return getRetrofitClients().create(RetrofitApis.class);
+//    }
+//
+//    private Retrofit getRetrofitClients() {
+//
+//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+//                .readTimeout(60, TimeUnit.SECONDS)
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60, TimeUnit.SECONDS);
+//
+//        return null;
+//    }
 
     public MutableLiveData<UserDetails> getUserDetails() {
         final MutableLiveData<UserDetails> userDetailsMutableLiveData = new MutableLiveData<>();
@@ -45,9 +68,9 @@ public class RetrofitManager {
         return userDetailsMutableLiveData;
     }
 
-    public MutableLiveData<UserChatDetails> getUserChatDetails() {
+    public MutableLiveData<UserChatDetails> getUserChatDetails(int user) {
         final MutableLiveData<UserChatDetails> userChatDetailsMutableLiveData = new MutableLiveData<>();
-        Call<UserChatDetails> call = retrofitApis.getUserChats();
+        Call<UserChatDetails> call = retrofitApis.getUserChats(user);
         call.enqueue(new Callback<UserChatDetails>() {
             @Override
             public void onResponse(Call<UserChatDetails> call, Response<UserChatDetails> response) {
@@ -64,6 +87,27 @@ public class RetrofitManager {
             }
         });
         return userChatDetailsMutableLiveData;
+    }
+
+    public MutableLiveData<MessageBodyResponse> sendMessage(MessageBody messageBody) {
+        final MutableLiveData<MessageBodyResponse> messageBodyResponseMutableLiveData = new MutableLiveData<>();
+        Call<MessageBodyResponse> call = retrofitApis.sendMessage(messageBody);
+        call.enqueue(new Callback<MessageBodyResponse>() {
+            @Override
+            public void onResponse(Call<MessageBodyResponse> call, Response<MessageBodyResponse> response) {
+                if (response.isSuccessful()) {
+                    messageBodyResponseMutableLiveData.postValue(response.body());
+                } else {
+                    messageBodyResponseMutableLiveData.postValue(new MessageBodyResponse(-1, "Something Went Wrong!"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageBodyResponse> call, Throwable t) {
+                messageBodyResponseMutableLiveData.postValue(new MessageBodyResponse(-1, "Something Went Wrong!\nFailure on request."));
+            }
+        });
+        return messageBodyResponseMutableLiveData;
     }
 
 }

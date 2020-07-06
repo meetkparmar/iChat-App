@@ -1,12 +1,14 @@
 package com.meetkparmar.ichatapp.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ public class HomePageActivity extends AppCompatActivity implements ItemClicked {
     private RecyclerView rvUserList;
     private HomePageActivityViewModel viewModel;
     private List<Users> users = new ArrayList<>();
+    private Button button;
     UserDetailsAdapter adapter;
     private Observer<UserDetails> UserDetailsObserver = new Observer<UserDetails>() {
         @Override
@@ -41,6 +44,7 @@ public class HomePageActivity extends AppCompatActivity implements ItemClicked {
             if (userDetails != null) {
                 hideLoadingDialog();
                 if (userDetails.success != 1) {
+                    openDialogBox();
                     Toast.makeText(HomePageActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 } else {
                     users = userDetails.getUsers();
@@ -49,6 +53,24 @@ public class HomePageActivity extends AppCompatActivity implements ItemClicked {
             }
         }
     };
+
+    private void openDialogBox() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomePageActivity.this);
+        final View customLayout = getLayoutInflater().inflate(R.layout.dialog_box, null);
+        alertDialog.setView(customLayout);
+        final AlertDialog alert = alertDialog.create();
+        alert.show();
+        button = customLayout.findViewById(R.id.btn_refresh);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialog = new ProgressDialog(HomePageActivity.this);
+                showLoadingDialog("Loading...");
+                viewModel.getUserDetails();
+                alert.dismiss();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +114,9 @@ public class HomePageActivity extends AppCompatActivity implements ItemClicked {
     public void onClickedListener(int position) {
         String name = users.get(position).getName();
         String image = users.get(position).getImage();
+        int id = users.get(position).getId();
         Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("id", id);
         intent.putExtra("name", name);
         intent.putExtra("image", image);
         startActivity(intent);

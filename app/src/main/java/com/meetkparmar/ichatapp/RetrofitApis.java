@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface RetrofitApis {
 
@@ -16,7 +17,9 @@ public interface RetrofitApis {
     Call<UserDetails> getUserDetails();
 
     @GET("api/v1/users/{userId}/chats")
-    Call<UserChatDetails> getUserChats();
+    Call<UserChatDetails> getUserChats(
+            @Path("user") int user
+    );
 
     @POST("api/v1/users/chat")
     Call<MessageBodyResponse> sendMessage(@Body MessageBody messageBody);

@@ -7,6 +7,11 @@ public class MessageBodyResponse {
     public String message;
     private Users user;
 
+    public MessageBodyResponse(int success, String message) {
+        this.success = success;
+        this.message = message;
+    }
+
     public int getSuccess() {
         return success;
     }
