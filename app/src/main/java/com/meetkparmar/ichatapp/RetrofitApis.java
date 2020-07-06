@@ -18,7 +18,7 @@ public interface RetrofitApis {
 
     @GET("api/v1/users/{userId}/chats")
     Call<UserChatDetails> getUserChats(
-            @Path("user") int user
+            @Path("userId") int user
     );
 
     @POST("api/v1/users/chat")

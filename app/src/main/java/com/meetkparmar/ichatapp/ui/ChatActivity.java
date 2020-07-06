@@ -2,10 +2,12 @@ package com.meetkparmar.ichatapp.ui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,12 +16,19 @@ import android.widget.Toast;
 
 import com.meetkparmar.ichatapp.CircleTransform;
 import com.meetkparmar.ichatapp.R;
+import com.meetkparmar.ichatapp.adapter.ChatDetailsAdapter;
+import com.meetkparmar.ichatapp.models.Chats;
 import com.meetkparmar.ichatapp.models.MessageBody;
 import com.meetkparmar.ichatapp.models.MessageBodyResponse;
 import com.meetkparmar.ichatapp.models.UserChatDetails;
 import com.meetkparmar.ichatapp.viewmodels.ChatActivityViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
@@ -27,6 +36,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -42,6 +53,10 @@ public class ChatActivity extends AppCompatActivity {
     private MessageBody messageBody;
     private ChatActivityViewModel viewModel;
     private ProgressDialog progressDialog;
+    private ChatDetailsAdapter adapter;
+    private List<Chats> chatsList = new ArrayList<>();
+    private Chats chat;
+    private RecyclerView rvMessageList;
 
     private Observer<UserChatDetails> UserChatDetailsObserver = new Observer<UserChatDetails>() {
         @Override
@@ -51,7 +66,9 @@ public class ChatActivity extends AppCompatActivity {
                 if (userChatDetails.success != 1) {
                     openDialogBox();
                 } else {
-
+                    chatsList = userChatDetails.getChats();
+                    chatsList = reverseListOrder(chatsList);
+                    adapter.setDataReceived(chatsList);
                 }
             }
         }
@@ -103,8 +120,9 @@ public class ChatActivity extends AppCompatActivity {
         icon = view.findViewById(R.id.iv_image);
         back = view.findViewById(R.id.btn_back);
 
-        etChatBox = view.findViewById(R.id.et_chatbox);
-        btnSend = view.findViewById(R.id.button_send);
+        etChatBox = findViewById(R.id.et_chatbox);
+        btnSend = findViewById(R.id.button_send);
+        rvMessageList = findViewById(R.id.rv_message_list);
 
         Intent intent = getIntent();
         userId = intent.getIntExtra("id", 0);
@@ -118,6 +136,9 @@ public class ChatActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         showLoadingDialog("Loading...");
         viewModel.getUserChatDetails(userId);
+
+        initAdapter(chatsList);
+//        initAdapter(chat);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,9 +155,33 @@ public class ChatActivity extends AppCompatActivity {
                 messageBody.setMessage(message);
                 messageBody.setId(userId);
                 viewModel.sendMessage(messageBody);
+                etChatBox.setText("");
             }
         });
 
+    }
+
+    private void initAdapter(List<Chats> chatsList) {
+        rvMessageList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+        adapter = new ChatDetailsAdapter(this, chatsList, false);
+        rvMessageList.setAdapter(adapter);
+    }
+
+//    private void initAdapter(Chats chat) {
+//        rvMessageList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+//        adapter = new ChatDetailsAdapter(this, chat, false);
+//        rvMessageList.setAdapter(adapter);
+//    }
+
+    private List<Chats> reverseListOrder(List<Chats> status)
+    {
+        Iterator<Chats> it = status.iterator();
+        List<Chats> destination = new ArrayList<>();
+        while (it.hasNext()) {
+            destination.add(0, it.next());
+            it.remove();
+        }
+        return destination;
     }
 
     @Override

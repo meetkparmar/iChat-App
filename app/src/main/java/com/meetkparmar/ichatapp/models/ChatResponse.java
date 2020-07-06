@@ -6,6 +6,7 @@ public class ChatResponse {
     private int user_id;
     private String message;
     private String created_at;
+    private String updated_at;
 
     public int getId() {
         return id;
@@ -47,5 +48,4 @@ public class ChatResponse {
         this.updated_at = updated_at;
     }
 
-    private String updated_at;
 }

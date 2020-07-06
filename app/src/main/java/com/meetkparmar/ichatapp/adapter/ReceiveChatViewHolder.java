@@ -1,14 +1,10 @@
 package com.meetkparmar.ichatapp.adapter;
 
-import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.meetkparmar.ichatapp.R;
 import com.meetkparmar.ichatapp.models.Chats;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +22,7 @@ public class ReceiveChatViewHolder extends RecyclerView.ViewHolder {
         tv_message_receive_time = view.findViewById(R.id.tv_message_receive_time);
     }
 
-    public void bind(Chats chats){
+    public void bind(Chats chats) {
         tv_message_receive.setText(chats.getMessage());
         tv_message_receive_time.setText(chats.getUpdated_at());
     }

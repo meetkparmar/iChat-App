@@ -18,20 +18,25 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private Context context;
-    private List<Chats> chatsList;
-    private int userId;
+    private List<Chats> dataRecevied;
+    private boolean status;
 
-    public ChatDetailsAdapter(Context context, List<Chats> chatsList, int userId) {
+    public ChatDetailsAdapter(Context context, List<Chats> chatsList, boolean status) {
         this.context = context;
-        this.chatsList = chatsList;
-        this.userId = userId;
+        this.dataRecevied = chatsList;
+        this.status = status;
+    }
+
+    public void setDataReceived(List<Chats> data) {
+        this.dataRecevied = data;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        Chats chats = (Chats) chatsList.get(position);
+        Chats chats = (Chats) dataRecevied.get(position);
 
-        if (chats.getId() != userId) {
+        if (status) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
@@ -59,7 +64,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Chats chats = (Chats) chatsList.get(position);
+        Chats chats = (Chats) dataRecevied.get(position);
 
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:
@@ -72,6 +77,6 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return chatsList.size();
+        return dataRecevied.size();
     }
 }
